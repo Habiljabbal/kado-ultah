@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selamat Ulang Tahun! 💖</title>
+    <!-- Mengimpor Google Fonts untuk tipografi yang manis dan estetik -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Sacramento&family=Caveat:wght@700&display=swap" rel="stylesheet">
+    <!-- FontAwesome untuk ikon gratis yang lucu -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Tailwind CSS untuk styling cepat komponen AI -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        // Mengonfigurasi warna kustom Tailwind agar selaras dengan tema pastel pink sebelumnya
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pastelPink: {
+                            50: '#FFF5F5',
+                            100: '#FFE3E3',
+                            200: '#FFD1D1',
+                            300: '#FFB3B3',
+                            400: '#FF9E9E',
+                            500: '#FF829D',
+                            600: '#FF5E7E',
+                            700: '#FF3D63',
+                        }
+                    },
+                    fontFamily: {
+                        quicksand: ['Quicksand', 'sans-serif'],
+                        sacramento: ['Sacramento', 'cursive'],
+                        caveat: ['Caveat', 'cursive'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #FFF5F5;
+            background-image: radial-gradient(#FFE3E3 20%, transparent 20%),
+                              radial-gradient(#FFE3E3 20%, transparent 20%);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Dekorasi Amplop CSS */
+        .envelope-wrapper {
+            position: relative;
+            width: 280px;
+            height: 180px;
+            background-color: #FFB3B3;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .envelope-wrapper:hover {
+            transform: scale(1.05);
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 140px solid transparent;
+            border-right: 140px solid transparent;
+            border-top: 100px solid #FF9E9E;
+            transform-origin: top;
+            transition: transform 0.5s ease 0.3s, z-index 0.2s ease 0.5s;
+            z-index: 3;
+            border-radius: 4px;
+        }
+
+        .envelope-pockets {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 140px solid #FFC4C4;
+            border-right: 140px solid #FFC4C4;
+            border-bottom: 90px solid #FFD1D1;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            z-index: 2;
+        }
+
+        .letter-preview {
+            position: absolute;
+            bottom: 10px;
+            left: 20px;
+            right: 20px;
+            height: 120px;
+            background-color: #FFFFFF;
+            border-radius: 5px;
+            z-index: 1;
+            transition: transform 0.5s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .envelope-wrapper.open .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 0;
+        }
+
+        .envelope-wrapper.open .letter-preview {
+            transform: translateY(-80px);
+            z-index: 2;
+        }
+
+        /* Animasi */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.15); }
+        }
+        @keyframes fall {
+            0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
+        }
+        .animate-bounce-slow {
+            animation: bounce 2.5s infinite ease-in-out;
+        }
+        .falling-heart {
+            position: absolute;
+            color: #FFB3B3;
+            font-size: 18px;
+            pointer-events: none;
+            animation: fall linear forwards;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body class="flex justify-center items-center p-4">
+
+    <!-- Container Utama Web -->
+    <div class="w-full max-w-xl my-6">
+
+        <!-- ==================== PAGE 1: AMPLOP ==================== -->
+        <div class="flex flex-col items-center text-center transition-all duration-1000 z-10" id="pageEnvelope">
+            <!-- Gambar Dekorasi Estetik atas Amplop -->
+            <img class="w-28 h-28 object-contain mb-5 animate-bounce-slow" 
+                 src="https://placehold.co/120x120/FFE3E3/FF5E7E?text=%F0%9F%92%8C" 
+                 alt="Aesthetic Pink Envelope Decor">
+            
+            <h1 class="font-caveat text-3xl md:text-4xl text-pastelPink-500 mb-8 font-bold">Ada surat spesial buat kamu... ✨</h1>
+            
+            <!-- Kotak Amplop Utama -->
+            <div class="envelope-wrapper" id="envelope" onclick="openEnvelope()">
+                <div class="envelope-flap"></div>
+                <div class="envelope-pockets"></div>
+                <div class="letter-preview">
+                    <p class="font-caveat text-xl text-gray-400">Buka Aku! ❤️</p>
+                    <i class="fa-solid fa-heart text-pastelPink-600 text-2xl mt-1 animate-pulse"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== PAGE 2: UCAPAN & HADIAH (MAIN CONTENT) ==================== -->
+        <div class="hidden w-full bg-white rounded-3xl p-6 md:p-8 shadow-xl border-3 border-pastelPink-100 text-center animate-[fadeInUp_1s_forwards]" id="pageContent">
+            <span class="text-pastelPink-500 text-3xl mb-3 inline-block animate-[bounce_3s_infinite]"><i class="fa-solid fa-heart"></i></span>
+            <h1 class="font-sacramento text-5xl md:text-6xl text-pastelPink-600 font-bold mb-5 leading-tight">Selamat Ulang Tahun! 🎉</h1>
+            
+            <!-- Surat Ucapan Manis -->
+            <div class="bg-pastelPink-50 rounded-2xl p-5 border-l-4 border-pastelPink-300 mb-6 text-left shadow-sm">
+                <p class="text-gray-700 text-sm md:text-base leading-relaxed mb-4">
+                    Selamat ulang tahun yang paling manis! Di hari yang spesial ini, aku cuma mau bilang terima kasih banyak sudah ada di hidupku selama ini. Semoga kamu selalu dikelilingi oleh kebahagiaan, tawa, dan hal-hal baik lainnya. ✨
+                </p>
+                <p class="text-gray-700 text-sm md:text-base leading-relaxed mb-4">
+                    Tetap jadi orang yang luar biasa, ya! Teruslah tersenyum karena senyummu itu menular dan membuat hari-hari orang lain jadi lebih cerah. 🌸
+                </p>
+                <div class="font-caveat text-2xl text-pastelPink-600 text-right mt-2">Dari orang tersayangmu ❤️</div>
+            </div>
+
+            <!-- Formulir Kirim Balasan -->
+            <div class="mb-6 text-left">
+                <h3 class="text-base font-bold text-pastelPink-600 flex items-center justify-between mb-3">
+                    <span class="flex items-center gap-2"><i class="fa-solid fa-pen-nib"></i> Kirim Balasan Kamu</span>
+                    <!-- Tombol Poles AI -->
+                    <!--<button onclick="beautifyReply()" class="bg-pastelPink-50 hover:bg-pastelPink-100 text-pastelPink-600 border border-pastelPink-200 text-xs font-bold py-1 px-3 rounded-full transition duration-300 flex items-center gap-1">
+                        <span>✨ Poles Pesanku</span>
+                    </button>-->
+                </h3>
+                <div class="relative">
+                    <textarea class="w-full h-24 border-2 border-pastelPink-100 rounded-xl p-4 text-sm text-gray-700 resize-none focus:outline-none focus:border-pastelPink-300 focus:ring-1 focus:ring-pastelPink-300 transition duration-300" id="replyMessage" placeholder="Tulis balasan pesan atau ucapan terima kasihmu di sini ya..."></textarea>
+                    
+                    <!-- Loader Mini untuk Poles AI -->
+                    <div id="polisherLoader" class="hidden absolute inset-0 bg-white/90 rounded-xl flex flex-col justify-center items-center">
+                        <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-pastelPink-600 mb-1"></div>
+                        <span class="text-xs text-pastelPink-500 font-semibold">Menghias kata-katamu biar makin menggemaskan... ✨</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pemilih Hadiah Ulang Tahun -->
+            <div class="bg-pastelPink-50/50 border-2 border-dashed border-pastelPink-200 rounded-2xl p-5 mb-6 text-left">
+                <div class="flex items-center gap-2 mb-2">
+                    <img class="w-8 h-8 object-contain" 
+                         src="https://placehold.co/45x45/FFE3E3/FF5E7E?text=%F0%9F%8E%81" 
+                         alt="Aesthetic Gift Decor">
+                    <h3 class="text-base font-bold text-pastelPink-600 flex items-center gap-2">
+                        <i class="fa-solid fa-gift"></i> Pilih Hadiah Ulang Tahunmu!
+                    </h3>
+                </div>
+                <p class="text-xs text-gray-400 mb-3">(Pilih satu hadiah yang paling kamu dambakan ya!)</p>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <!-- Kartu Hadiah 1 -->
+                    <div class="gift-card bg-white border-2 border-pastelPink-100 rounded-xl p-3 cursor-pointer transition duration-300 flex flex-col items-center justify-center gap-2 select-none hover:translate-y-[-2px]" onclick="selectGift(this, 'Beli Boba 🧋')">
+                        <i class="fa-solid fa-mug-hot text-pastelPink-200 text-xl transition"></i>
+                        <span class="text-xs font-semibold text-gray-600">Beli Boba 🧋</span>
+                    </div>
+                    <!-- Kartu Hadiah 2 -->
+                    <div class="gift-card bg-white border-2 border-pastelPink-100 rounded-xl p-3 cursor-pointer transition duration-300 flex flex-col items-center justify-center gap-2 select-none hover:translate-y-[-2px]" onclick="selectGift(this, 'Makan Bareng 🍕')">
+                        <i class="fa-solid fa-utensils text-pastelPink-200 text-xl transition"></i>
+                        <span class="text-xs font-semibold text-gray-600">Makan Bareng 🍕</span>
+                    </div>
+                    <!-- Kartu Hadiah 3 -->
+                    <div class="gift-card bg-white border-2 border-pastelPink-100 rounded-xl p-3 cursor-pointer transition duration-300 flex flex-col items-center justify-center gap-2 select-none hover:translate-y-[-2px]" onclick="selectGift(this, 'Boneka Lucu 🧸')">
+                        <i class="fa-solid fa-face-smile text-pastelPink-200 text-xl transition"></i>
+                        <span class="text-xs font-semibold text-gray-600">Boneka Lucu 🧸</span>
+                    </div>
+                    <!-- Kartu Hadiah 4 -->
+                    <div class="gift-card bg-white border-2 border-pastelPink-100 rounded-xl p-3 cursor-pointer transition duration-300 flex flex-col items-center justify-center gap-2 select-none hover:translate-y-[-2px]" onclick="selectGift(this, 'Jalan-jalan 🚗')">
+                        <i class="fa-solid fa-compass text-pastelPink-200 text-xl transition"></i>
+                        <span class="text-xs font-semibold text-gray-600">Jalan-jalan 🚗</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tombol Kirim Ke WhatsApp -->
+            <button class="w-full bg-gradient-to-r from-pastelPink-500 to-pastelPink-600 hover:from-pastelPink-600 hover:to-pastelPink-700 text-white font-bold py-3.5 px-6 rounded-full shadow-lg transition duration-300 flex items-center justify-center gap-2" onclick="sendToWhatsApp()">
+                <i class="fa-brands fa-whatsapp text-lg"></i> Kirim Balasan ke WhatsApp
+            </button>
+        </div>
+
+    </div>
+
+    <!-- ==================== MODAL NOTIFIKASI KUSTOM (Ganti Alert) ==================== -->
+    <div id="customAlert" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-fade-in">
+        <div class="bg-white rounded-2xl p-6 max-w-sm w-full border-2 border-pastelPink-100 shadow-2xl text-center">
+            <div class="w-12 h-12 bg-pastelPink-50 rounded-full flex items-center justify-center mx-auto mb-4 text-pastelPink-600 text-xl">
+                <i id="alertIcon" class="fa-solid fa-circle-exclamation animate-bounce"></i>
+            </div>
+            <p id="alertMessage" class="text-sm font-semibold text-gray-700 leading-relaxed mb-5"></p>
+            <button onclick="closeAlert()" class="bg-pastelPink-600 hover:bg-pastelPink-700 text-white font-bold text-xs py-2.5 px-5 rounded-full transition w-full shadow-md">
+                Siap, Cantik! 💕
+            </button>
+        </div>
+    </div>
+
+    <!-- ==========================================
+       LOGIKA JAVASCRIPT & GEMINI API INTEGRASI
+       ========================================== -->
+    <script>
+        // No Telepon tujuan kirim pesan (Ganti dengan nomor WhatsApp kamu!)
+        const MY_WHATSAPP_NUMBER = "6285173211754"; 
+        
+        let selectedGiftText = ""; 
+        let currentAIGeneratedText = "";
+
+        // ==================== KUSTOM MODAL/NOTIFICATION ====================
+        function showAlert(message, iconClass = "fa-heart") {
+            const modal = document.getElementById('customAlert');
+            const msgEl = document.getElementById('alertMessage');
+            const iconEl = document.getElementById('alertIcon');
+            
+            msgEl.textContent = message;
+            iconEl.className = `fa-solid ${iconClass} animate-bounce`;
+            
+            modal.classList.remove('hidden');
+        }
+
+        function closeAlert() {
+            document.getElementById('customAlert').classList.add('hidden');
+        }
+
+        // ==================== OPERASI UTAMA WEB ====================
+        function openEnvelope() {
+            const envelope = document.getElementById('envelope');
+            envelope.classList.add('open');
+            startFallingHearts();
+
+            // Beri jeda agar animasi selesai, lalu ganti halaman
+            setTimeout(() => {
+                document.getElementById('pageEnvelope').classList.add('hidden');
+                
+                const pageContent = document.getElementById('pageContent');
+                pageContent.classList.remove('hidden');
+            }, 1200);
+        }
+
+        function selectGift(element, giftName) {
+            const allCards = document.querySelectorAll('.gift-card');
+            allCards.forEach(card => {
+                card.classList.remove('border-pastelPink-500', 'bg-pastelPink-100', 'translate-y-[-3px]', 'shadow-md');
+                card.querySelector('i').classList.remove('text-pastelPink-600', 'scale-110');
+                card.querySelector('span').classList.remove('text-pastelPink-600');
+            });
+            
+            element.classList.add('border-pastelPink-500', 'bg-pastelPink-100', 'translate-y-[-3px]', 'shadow-md');
+            element.querySelector('i').classList.add('text-pastelPink-600', 'scale-110');
+            element.querySelector('span').classList.add('text-pastelPink-600');
+            selectedGiftText = giftName;
+        }
+
+        // ==================== INTEGRASI GEMINI API ====================
+
+        // Helper untuk melakukan pemanggilan API dengan Exponential Backoff
+        async function fetchGeminiWithBackoff(prompt, systemInstruction = "", retries = 3, delay = 1000) {
+            const apiKey = ""; // Dibiarkan kosong, akan diinjek otomatis oleh platform Canvas di runtime.
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+            
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }]
+            };
+
+            if (systemInstruction) {
+                payload.systemInstruction = {
+                    parts: [{ text: systemInstruction }]
+                };
+            }
+
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    if (response.ok) {
+                        const result = await response.json();
+                        const text = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+                        if (text) return text;
+                    }
+                } catch (error) {
+                    // Jangan log error ke konsol, lakukan backoff
+                }
+                await new Promise(resolve => setTimeout(resolve, delay));
+                delay *= 2; // Lipatgandakan jeda waktu tunggu
+            }
+            throw new Error("Layanan sibuk");
+        }
+
+        // Fitur 1: Generator Puisi / Harapan AI
+        async function generateAIWish(tone) {
+            const container = document.getElementById('aiOutputContainer');
+            const textEl = document.getElementById('aiText');
+            const loader = document.getElementById('aiLoader');
+            const copyBtn = document.getElementById('copyAiBtn');
+
+            container.classList.remove('hidden');
+            textEl.classList.add('hidden');
+            copyBtn.classList.add('hidden');
+            loader.classList.remove('hidden');
+
+            const systemPrompt = "Kamu adalah peri cinta sekaligus penyair terbaik yang sangat hangat, puitis, dan ramah. Tuliskan ucapan selamat ulang tahun kustom yang unik, estetik, sangat menyentuh hati, romantis, atau lucu (sesuai gaya yang diminta), penuh dengan emoji imut, menggunakan bahasa Indonesia yang santai tapi indah (gaya anak muda gaul estetik). Tulis pendek saja, maksimal 1 paragraf atau 2 bait puisi pendek.";
+            const userPrompt = `Tuliskan ucapan ulang tahun dengan nada: "${tone}". Targetnya adalah sahabat perempuan atau pacar yang sedang berulang tahun. Buat itu terasa personal, manis, dan menyentuh!`;
+
+            try {
+                const resultText = await fetchGeminiWithBackoff(userPrompt, systemPrompt);
+                currentAIGeneratedText = resultText.trim();
+                textEl.innerHTML = `"${currentAIGeneratedText}"`;
+                
+                loader.classList.add('hidden');
+                textEl.classList.remove('hidden');
+                copyBtn.classList.remove('hidden');
+            } catch (err) {
+                loader.classList.add('hidden');
+                showAlert("Aduh, peri cinta sedang sibuk merangkai bintang di langit. Coba klik lagi ya! 🥺", "fa-triangle-exclamation");
+                container.classList.add('hidden');
+            }
+        }
+
+        // Memasukkan hasil ucapan AI ke kolom balasan pesan
+        function injectAIToReply() {
+            if (currentAIGeneratedText) {
+                const textarea = document.getElementById('replyMessage');
+                const beforeVal = textarea.value.trim();
+                textarea.value = beforeVal ? `${beforeVal}\n\n${currentAIGeneratedText}` : currentAIGeneratedText;
+                showAlert("Ucapan AI berhasil dimasukkan ke kolom balasan kamu! 🥰", "fa-face-smile-wink");
+            }
+        }
+
+        // Fitur 2: Poles Balasan Kamu biar jauh lebih Manis
+        async function beautifyReply() {
+            const textarea = document.getElementById('replyMessage');
+            const originalText = textarea.value.trim();
+            const loader = document.getElementById('polisherLoader');
+
+            if (!originalText) {
+                showAlert("Ketikkan balasan singkatmu dulu di kolom, lalu biarkan AI menghiasnya! ✍️", "fa-pen-clip");
+                return;
+            }
+
+            loader.classList.remove('hidden');
+
+            const systemPrompt = "Kamu adalah asisten pengubah pesan yang ahli menyulap ucapan sederhana menjadi ucapan yang sangat manis, tulus, manja, penuh kasih sayang, bersyukur, dan menggemaskan untuk sahabat/pacar dalam bahasa Indonesia yang estetik dan santai. Gunakan emoji-emoji imut yang pas.";
+            const userPrompt = `Ubahlah pesan balasan berikut ini agar terdengar jauh lebih manis, tulus, manis sekali, dan menyenangkan untuk dikirimkan kembali, namun tetap pertahankan maksud aslinya: "${originalText}"`;
+
+            try {
+                const polishedText = await fetchGeminiWithBackoff(userPrompt, systemPrompt);
+                textarea.value = polishedText.trim();
+                loader.classList.add('hidden');
+                showAlert("Pesanmu berhasil dipoles dengan bubuk cinta AI! Lebih gemesin kan? ✨", "fa-wand-magic-sparkles");
+            } catch (err) {
+                loader.classList.add('hidden');
+                showAlert("Sinyal keajaiban AI terganggu, coba klik 'Poles' sekali lagi ya! 💖", "fa-triangle-exclamation");
+            }
+        }
+
+        // ==================== WHATSAPP INTEGRATION & SENDER ====================
+        function sendToWhatsApp() {
+            const replyMessageText = document.getElementById('replyMessage').value.trim();
+            
+            if (replyMessageText === "") {
+                showAlert("Tulis balasan pesan kamu dulu ya!🥰", "fa-comment-dots");
+                return;
+            }
+
+            if (selectedGiftText === "") {
+                showAlert("Jangan lupa pilih satu hadiah kado yang paling kamu pengen! 🎁", "fa-gift");
+                return;
+            }
+
+            // Merangkai teks pesan WhatsApp agar rapi
+            const encodedText = encodeURIComponent(
+                `Hai! Aku udah baca surat ulang tahunnya 💖\n\n` +
+                `*Pesan balasanku:* \n"${replyMessageText}"\n\n` +
+                `*Hadiah pilihan yang aku mau:* \n👉 ${selectedGiftText}\n\n` +
+                `Makasih banyak yaaa! 🥰`
+            );
+
+            const waUrl = `https://api.whatsapp.com/send?phone=${MY_WHATSAPP_NUMBER}&text=${encodedText}`;
+            window.open(waUrl, '_blank');
+        }
+
+        // ==================== ANIMASI HATI BERGUGURAN ====================
+        function startFallingHearts() {
+            const heartInterval = setInterval(() => {
+                const heart = document.createElement('div');
+                heart.classList.add('falling-heart');
+                heart.innerHTML = '<i class="fa-solid fa-heart"></i>';
+                
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.fontSize = (Math.random() * 15 + 10) + 'px';
+                heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                
+                document.body.appendChild(heart);
+
+                setTimeout(() => {
+                    heart.remove();
+                }, 6000);
+            }, 150);
+
+            setTimeout(() => {
+                clearInterval(heartInterval);
+            }, 6000);
+        }
+    </script>
+</body>
+</html>
